@@ -34,7 +34,9 @@ app.get("/signIn", (req, res) => {
 });
 
 app.get("/blog", (req, res) => {
-    res.render("blog");
+    const years = [2021, 2020, 2019, 2018];
+    const blogs = [{title: 'aaa', detail: 'AAA'}, {title: 'bbb', detail: 'BBB'}, {title: 'ccc', detail: 'CCC'}];
+    res.render("blog", {year: years, blog: blogs});
 });
 
 // 404

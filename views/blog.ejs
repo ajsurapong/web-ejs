@@ -3,31 +3,55 @@
 
 <%- include('./partials/header.ejs') %>
 
-<body>
-    <%- include('./partials/navbar.ejs', {page: 1}) %>
-    
-    <div class="container-fluid">        
-        <h1>My blog</h1>
-        <% const year = [2021, 2020, 2019, 2018] %>
-        <select id="selectYear" class="form-control" style="width: 80px;">
-            <!-- <option value="2021">2021</option>
-            <option value="2020">2020</option> -->
-            <% year.forEach(element => { %>
-                <option value="<%= element %>"><%= element %> </option> 
-            <% }) %>
-        </select>
+    <body>
+        <%- include('./partials/navbar.ejs', {page: 1}) %>
 
-        <% const blog = [{title: 'aaa', detail: 'AAA'}, {title: 'bbb', detail: 'BBB'}] %>
-        <table class="table table-bordered table-striped mt-2">
-            <tr><th>No.</th> <th>Title</th> <th>Detail</th></tr>
-            <!-- <tr><td>1</td> <td>Node.js</td> <td>A server-side JS</td></tr>
-            <tr><td>2</td> <td>Node.js</td> <td>A server-side JS</td></tr> -->
-            <% for( let index = 0; index < blog.length; index++ ) { %>
-                <tr><td><%= index+1 %> </td> <td><%= blog[index].title %> </td> <td><%= blog[index].detail %></td></tr>
-            <% } %>
-        </table>
-        <%- include('./partials/footer.ejs') %>
-    </div>
-</body>
+            <div class="container-fluid">
+                <h1>My blog</h1>
+
+                <div class="row">
+                    <div class="col-10">                         
+                        <select id="selectYear" class="form-control" style="width: 80px;">
+                            <!-- <option value="2021">2021</option>
+                                        <option value="2020">2020</option> -->
+                            <% year.forEach(element=> { %>
+                                <option value="<%= element %>">
+                                    <%= element %>
+                                </option>
+                                <% }) %>
+                        </select>
+                    </div>
+                    <div class="col-2">
+                        <button class="btn btn-success float-right">Add</button>
+                    </div>
+                </div>                
+
+                <table class="table table-bordered table-striped mt-2">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>No.</th>
+                            <th>Title</th>
+                            <th>Detail</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% for( let index=0; index < blog.length; index++ ) { %>
+                            <tr>
+                                <td>
+                                    <%= index+1 %>
+                                </td>
+                                <td>
+                                    <%= blog[index].title %>
+                                </td>
+                                <td>
+                                    <%= blog[index].detail %>
+                                </td>
+                            </tr>
+                            <% } %>
+                    </tbody>
+                </table>
+                <%- include('./partials/footer.ejs') %>
+            </div>
+    </body>
 
 </html>

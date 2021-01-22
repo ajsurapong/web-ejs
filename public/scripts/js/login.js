@@ -1,5 +1,6 @@
 $(document).ready(function () {
-    $("#btnSignIn").click(function () { 
+    $("#formLogin").submit(function (e) { 
+        e.preventDefault();
         const username = $("#txtUsername").val();
         const password = $("#txtPassword").val();
     
@@ -15,6 +16,6 @@ $(document).ready(function () {
                 $("#alertMessage").text(xhr.responseText);
                 $(".alert-danger").show().fadeOut(3000);
             }
-        }); 
+        });
     });    
 });

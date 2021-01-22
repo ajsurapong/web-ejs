@@ -33,9 +33,11 @@ app.get("/signIn", (req, res) => {
     res.render("login");
 });
 
+// --- show blogs of current year ---
 app.get("/blog", (req, res) => {
     const years = [2021, 2020, 2019, 2018];
-    const blogs = [{title: 'aaa', detail: 'AAA'}, {title: 'bbb', detail: 'BBB'}, {title: 'ccc', detail: 'CCC'}];
+    const lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis enim lobortis scelerisque fermentum dui faucibus in ornare quam. Fringilla urna porttitor rhoncus dolor purus non. Dictum at tempor commodo ullamcorper a lacus vestibulum sed arcu.";
+    const blogs = [{title: 'aaa', detail: lorem}, {title: 'bbb', detail: lorem}, {title: 'ccc', detail: lorem}];
     res.render("blog", {year: years, blog: blogs});
 });
 

@@ -32,6 +32,7 @@
                             <th>No.</th>
                             <th>Title</th>
                             <th>Detail</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -45,6 +46,10 @@
                                 </td>
                                 <td>
                                     <%= blog[index].detail %>
+                                </td>
+                                <td>
+                                    <button class="btn btn-danger btnDelelte">Delete</button>
+                                    <button class="btn btn-warning btnEdit">Edit</button>
                                 </td>
                             </tr>
                             <% } %>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include('./partials/header.ejs') %>
+
+<body>
+    <%- include('./partials/navbar.ejs', {page: 2}) %>
+
+    <div class="container-fluid">
+        <h1>Sign in</h1>
+        <input type="text" class="form-control my-2" placeholder="Username" id="txtUsername">
+        <input type="password" class="form-control mb-2" placeholder="Password" id="txtPassword">
+
+        <button id="btnSignIn" class="btn btn-primary my-2">Sign in</button>
+
+        <div class="alert alert-danger" style="display: none">
+            <p id="alertMessage">Login Error</p>
+        </div>
+
+        <%- include('./partials/footer.ejs') %>
+    </div>
+
+    <script src="/scripts/js/login.js"></script>
+</body>
+
+</html>

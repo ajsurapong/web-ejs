@@ -4,7 +4,11 @@
 <%- include('./partials/header.ejs') %>
 
 <body>
-    <%- include('./partials/navbar.ejs', {page: 0}) %>
+    <% if (typeof user === "undefined") { %>
+        <%- include('./partials/navbar-notlogin.ejs', {page: 0}) %>
+    <% } else { %>
+        <%- include('./partials/navbar.ejs', {page: 0}) %>
+    <% } %>
     
     <div class="container-fluid">        
         <h1>Welcome to my website</h1>

@@ -9,8 +9,8 @@ $(document).ready(function () {
             url: "/login",
             data: { "username": username, "password": password},
             success: function (data) {
-                alert(data);
-                // window.location.replace(data);
+                // alert(data);
+                window.location.replace(data);
             },
             error: function (xhr) {
                 $("#alertMessage").text(xhr.responseText);

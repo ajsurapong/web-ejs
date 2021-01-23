@@ -20,12 +20,15 @@ app.use(helmet());      //secure http header
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser(cookieKey));   //to read/write cookies
 
 // ************ Functions ************
 function checkUser(req, res, next) {
     //get token from cookie (web) or header (others, mobile) or req.body
-    const token = req.headers['x-access-token'];
-    //is there a token
+    // token should not be kept in web session/local storage, must be signed cookie
+    // for mobile, token could be kept in local storage 
+    const token = req.signedCookies["mytoken"] || req.headers['x-access-token'];
+    //is there a token?
     if (token) {
         //verify token: valid and not expired
         jwt.verify(token, jwtKey, function (err, decoded) {
@@ -34,13 +37,14 @@ function checkUser(req, res, next) {
                 res.status(400).send("Invalid token.");
             } else {
                 // if everything is good, save decoded payload to request for use in other routes
-                req.decoded = decoded;
+                req.decoded = decoded;                
                 next();
             }
         });
     }
     else {
-        res.status(400).send("Token not found.");
+        // res.status(400).send("Token not found.");
+        res.redirect("/");
     }
 }
 
@@ -49,7 +53,19 @@ function checkUser(req, res, next) {
 app.post("/login", (req, res) => {
     const { username, password } = req.body;
     if (username == "admin" && password == "1234") {
-        res.send("Login OK");
+        // create JWT
+        const payload = { userID: 1, username: 'admin' };
+        const token = jwt.sign(payload, jwtKey, { expiresIn: '1d' });   //60 means expired in 60 seconds or use '10h', '7d'
+
+        // save JWT to cookie at client
+        const cookieOption = {
+            maxAge: 24 * 60 * 60 * 1000,  //milliseconds
+            httpOnly: true,
+            signed: true
+        };
+        res.cookie("mytoken", token, cookieOption);
+
+        res.send("/blog");
     }
     else {
         res.status(400).send("Login failed");
@@ -61,12 +77,36 @@ app.get("/jwt", (req, res) => {
     const payload = { userID: 1, username: 'admin' };
     const token = jwt.sign(payload, jwtKey, { expiresIn: '1d' });   //60 means expired in 60 seconds or use '10h', '7d'
     res.send(token);
-    // eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOjEsInVzZXJuYW1lIjoiYWRtaW4iLCJpYXQiOjE2MTEzOTI4OTMsImV4cCI6MTYxMTQ3OTI5M30.4VlKOki1aaqjCeGW6PPsNKZRDhoJvq_dWsXKSEq7Xs4
+});
+
+// --- logout ---
+app.get("/logout", (req, res) => {
+    // remove token cookie
+    res.clearCookie("mytoken");
+    // return to homepage
+    // note that user can return to previous kept page in cache, but it is just old snapshot
+    res.redirect("/");
 });
 
 // ************ Page routes ************
 app.get("/", (req, res) => {
-    res.render("index");
+    const token = req.signedCookies["mytoken"] || req.headers['x-access-token'];
+    //is there a token?
+    if (token) {
+        //verify token: valid and not expired
+        jwt.verify(token, jwtKey, function (err, decoded) {
+            if (err) {
+                // token found but not valid
+                res.render("index");
+            } else {
+                res.render("index", {user: decoded});
+            }
+        });
+    }
+    else {
+        //no token
+        res.render("index");
+    }
 });
 
 app.get("/signIn", (req, res) => {

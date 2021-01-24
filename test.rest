@@ -1,7 +1,15 @@
-# get blogs without token
+### get blogs without token
 GET http://localhost:3000/blog
 
-###
-# get blogs with token, note that this test token expires in 1 day, for later test you may need to create new token
+### get blogs with token, note that this test token expires in 1 day, for later test you may need to create new token
 GET http://localhost:3000/blog
 x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOjEsInVzZXJuYW1lIjoiYWRtaW4iLCJpYXQiOjE2MTEzOTI4OTMsImV4cCI6MTYxMTQ3OTI5M30.4VlKOki1aaqjCeGW6PPsNKZRDhoJvq_dWsXKSEq7Xs4
+
+### Check login
+POST http://localhost:3000/login
+content-type: application/json
+
+{
+    "username": "admin",
+    "password": "1234"
+}

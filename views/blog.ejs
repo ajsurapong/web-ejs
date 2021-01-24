@@ -13,11 +13,10 @@
             <div class="row">
                 <div class="col-10">
                     <select id="selectYear" class="form-control" style="width: 80px;">
-                        <!-- <option value="2021">2021</option>
-                                    <option value="2020">2020</option> -->
+                        <option value="all">All</option>
                         <% year.forEach(element=> { %>
-                            <option value="<%= element %>">
-                                <%= element %>
+                            <option value="<%= element.year %>">
+                                <%= element.year %>
                             </option>
                             <% }) %>
                     </select>

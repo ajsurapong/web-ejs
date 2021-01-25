@@ -151,38 +151,45 @@ app.get("/signIn", (req, res) => {
     res.render("login");
 });
 
-// --- show blogs of current year ---
+// --- show all blogs ---
 app.get("/blog", checkUser, (req, res) => {
-    // const years = [2021, 2020, 2019, 2018];
-    // const lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis enim lobortis scelerisque fermentum dui faucibus in ornare quam. Fringilla urna porttitor rhoncus dolor purus non. Dictum at tempor commodo ullamcorper a lacus vestibulum sed arcu.";
-    // const blogs = [{ title: 'aaa', detail: lorem }, { title: 'bbb', detail: lorem }, { title: 'ccc', detail: lorem }];
-    // res.send("Welcome " + req.decoded.username);
-    // res.render("blog", { username: req.decoded.username, year: years, blog: blogs });
-
-    // const sql = "SELECT postID, title, detail FROM post WHERE userID=?";
-    // con.query(sql, [req.decoded.userID], (err, result) => {
-    //     if(err) {
-    //         console.log(err);
-    //         return res.status(500).send("No post");
-    //     }
-    //     res.render("blog", { username: req.decoded.username, year: years, blog: result });
-    // });
-
     // get all years
-    let sql = "SELECT DISTINCT year FROM post";
+    let sql = "SELECT DISTINCT year FROM post ORDER BY year DESC";
     con.query(sql, (err, years) => {
         if(err) {
             console.log(err);
             return res.status(500).send("Database server error");
         }
-        // get all blog posts
-        sql = "SELECT postID, title, detail FROM post WHERE userID=?";
+        // get all blog posts ordered by year
+        sql = "SELECT postID, title, detail, year FROM post WHERE userID=? ORDER BY year DESC";
         con.query(sql, [req.decoded.userID], (err, blogs) => {
             if(err) {
                 console.log(err);
                 return res.status(500).send("Database server error");
             }
             res.render("blog", { username: req.decoded.username, year: years, blog: blogs });
+        });
+    });
+});
+
+// --- show blogs of current year ---
+app.get("/blog/:year", checkUser, (req, res) => {
+    const year = req.params.year;
+    // get all years
+    let sql = "SELECT DISTINCT year FROM post ORDER BY year DESC";
+    con.query(sql, (err, years) => {
+        if(err) {
+            console.log(err);
+            return res.status(500).send("Database server error");
+        }
+        // get all blog posts ordered by year
+        sql = "SELECT postID, title, detail, year FROM post WHERE userID=? AND year=?";
+        con.query(sql, [req.decoded.userID, year], (err, blogs) => {
+            if(err) {
+                console.log(err);
+                return res.status(500).send("Database server error");
+            }
+            res.render("blog", { username: req.decoded.username, year: years, blog: blogs, chosenYear: year });
         });
     });
 });

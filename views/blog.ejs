@@ -6,57 +6,65 @@
 <body>
     <%- include('./partials/navbar.ejs', {page: 1}) %>
 
-        <div class="container-fluid">
-            <h1>Welcome <%= username %>
-            </h1>
+    <div class="container-fluid">
+        <h1>Welcome <%= username %>
+        </h1>
 
-            <div class="row">
-                <div class="col-10">
-                    <select id="selectYear" class="form-control" style="width: 80px;">
-                        <option value="all">All</option>
-                        <% year.forEach(element=> { %>
-                            <option value="<%= element.year %>">
-                                <%= element.year %>
-                            </option>
-                            <% }) %>
-                    </select>
-                </div>
-                <div class="col-2">
-                    <button class="btn btn-success float-right">Add</button>
-                </div>
+        <div class="row">
+            <div class="col-10">
+                <select id="selectYear" class="form-control" style="width: 100px;">
+                    <!-- We check wheter ejs varialbe exists using locals.varname -->
+                    <% const cyear = locals.chosenYear ? chosenYear: "all" %>
+                    <option value="all">All years</option>
+                    <% year.forEach(element=> { %>
+                        <option value="<%= element.year %>" <%- element.year==cyear?'selected':'' %>>  
+                            <%= element.year %>
+                        </option>
+                        <% }) %>
+                </select>
             </div>
-
-            <table class="table table-bordered table-striped mt-2">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>No.</th>
-                        <th>Title</th>
-                        <th>Detail</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% for( let index=0; index < blog.length; index++ ) { %>
-                        <tr>
-                            <td>
-                                <%= index+1 %>
-                            </td>
-                            <td>
-                                <%= blog[index].title %>
-                            </td>
-                            <td>
-                                <%= blog[index].detail %>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger btnDelelte">Delete</button>
-                                <button class="btn btn-warning btnEdit">Edit</button>
-                            </td>
-                        </tr>
-                        <% } %>
-                </tbody>
-            </table>
-            <%- include('./partials/footer.ejs') %>
+            <div class="col-2">
+                <button class="btn btn-success float-right">Add</button>
+            </div>
         </div>
+
+        <table class="table table-bordered table-striped mt-2">
+            <thead class="thead-dark">
+                <tr>
+                    <th>No.</th>
+                    <th>Title</th>
+                    <th>Detail</th>
+                    <th>Year</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% for( let index=0; index < blog.length; index++ ) { %>
+                    <tr>
+                        <td>
+                            <%= index+1 %>
+                        </td>
+                        <td>
+                            <%= blog[index].title %>
+                        </td>
+                        <td>
+                            <%= blog[index].detail %>
+                        </td>
+                        <td>
+                            <%= blog[index].year %>
+                        </td>
+                        <td>
+                            <button class="btn btn-danger btnDelelte">Delete</button>
+                            <button class="btn btn-warning btnEdit">Edit</button>
+                        </td>
+                    </tr>
+                    <% } %>
+            </tbody>
+        </table>
+        <%- include('./partials/footer.ejs') %>
+    </div>
+
+    <script src="/scripts/js/blog.js"></script>
 </body>
 
 </html>

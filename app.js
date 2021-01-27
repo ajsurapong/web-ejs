@@ -126,31 +126,7 @@ app.get("/logout", (req, res) => {
     res.redirect("/");
 });
 
-// ************ Page routes ************
-app.get("/", (req, res) => {
-    const token = req.signedCookies["mytoken"] || req.headers['x-access-token'];
-    //is there a token?
-    if (token) {
-        //verify token: valid and not expired
-        jwt.verify(token, jwtKey, function (err, decoded) {
-            if (err) {
-                // token found but not valid
-                res.render("index");
-            } else {
-                res.render("index", {user: decoded});
-            }
-        });
-    }
-    else {
-        //no token
-        res.render("index");
-    }
-});
-
-app.get("/signIn", (req, res) => {
-    res.render("login");
-});
-
+// ========== Blog CRUD =========
 // --- show all blogs ---
 app.get("/blog", checkUser, (req, res) => {
     // get all years
@@ -192,6 +168,80 @@ app.get("/blog/:year", checkUser, (req, res) => {
             res.render("blog", { username: req.decoded.username, year: years, blog: blogs, chosenYear: year });
         });
     });
+});
+
+// --- Delete blog post ---
+app.delete("/blog/post/:id", checkUser, (req, res) => {
+    const postID = req.params.id;
+    const sql = "DELETE FROM post WHERE postID=? AND userID=?";
+    con.query(sql, [postID, req.decoded.userID], (err, result) => {
+        if(err) {
+            console.log(err);
+            return res.status(500).send("Database server error");
+        }
+        if(result.affectedRows != 1) {
+            return res.status(500).send("Delete failed");
+        }
+        res.send("/blog");
+    });
+});
+
+// --- Add blog post ---
+app.post("/blog/post", checkUser, (req, res) => {
+    const {title, detail} = req.body;
+    const year = new Date().getFullYear();
+    const sql = "INSERT INTO post(userID, title, detail, year) VALUES(?,?,?,?)";
+    con.query(sql, [req.decoded.userID, title, detail, year], (err, result) => {
+        if(err) {
+            console.log(err);
+            return res.status(500).send("Database server error");
+        }
+        if(result.affectedRows != 1) {
+            return res.status(500).send("Adding failed");
+        }
+        res.send("/blog");
+    });
+});
+
+// --- Edit blog post ---
+app.put("/blog/post", checkUser, (req, res) => {
+    const {postID, title, detail} = req.body;
+    const sql = "UPDATE post SET title=?, detail=? WHERE postID=? AND userID=?";
+    con.query(sql, [title, detail, postID, req.decoded.userID], (err, result) => {
+        if(err) {
+            console.log(err);
+            return res.status(500).send("Database server error");
+        }
+        if(result.affectedRows != 1) {
+            return res.status(500).send("Updating failed");
+        }
+        res.send("/blog");
+    });
+});
+
+// ************ Page routes ************
+app.get("/", (req, res) => {
+    const token = req.signedCookies["mytoken"] || req.headers['x-access-token'];
+    //is there a token?
+    if (token) {
+        //verify token: valid and not expired
+        jwt.verify(token, jwtKey, function (err, decoded) {
+            if (err) {
+                // token found but not valid
+                res.render("index");
+            } else {
+                res.render("index", {user: decoded});
+            }
+        });
+    }
+    else {
+        //no token
+        res.render("index");
+    }
+});
+
+app.get("/signIn", (req, res) => {
+    res.render("login");
 });
 
 // 404

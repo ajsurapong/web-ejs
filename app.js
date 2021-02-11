@@ -1,5 +1,6 @@
 const express = require("express");
 const path = require("path");
+const compression = require("compression");
 const helmet = require("helmet");
 
 const pageRoute = require("./routes/pages");
@@ -14,6 +15,7 @@ app.set("view engine", "ejs");
 // app.set('views', path.join(__dirname, 'views'));
 
 // ************ Middleware ************
+app.use(compression()); //compress server response
 app.use(helmet());      //secure http header
 app.use(express.static(path.join(__dirname, "public")));
 

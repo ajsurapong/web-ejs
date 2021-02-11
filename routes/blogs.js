@@ -33,8 +33,8 @@ router.get("/blog", (req, res) => {
 router.get("/blog/:year", (req, res) => {
     const year = req.params.year;
     // get all years
-    let sql = "SELECT DISTINCT year FROM post ORDER BY year DESC";
-    con.query(sql, (err, years) => {
+    let sql = "SELECT DISTINCT year FROM post WHERE userID=? ORDER BY year DESC";
+    con.query(sql, [req.decoded.userID], (err, years) => {
         if(err) {
             console.log(err);
             return res.status(500).send("Database server error");
